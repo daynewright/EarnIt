@@ -18,9 +18,6 @@ namespace user_auth.Models
         public int Point { get; set; }
 
         [Required]
-        public DateTime Date { get; set; }
-
-        [Required]
         public int EventId { get; set; }
 
         public Event Event { get; set; }
