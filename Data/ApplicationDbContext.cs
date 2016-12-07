@@ -15,12 +15,30 @@ namespace EarnIt.Data
         {
         }
 
+        public DbSet<Child> Child { get; set; }
+        public DbSet<Event> Event { get; set; }
+        public DbSet<EventState> EventState { get; set; }
+        public DbSet<Reward> Reward { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+
+            builder.Entity<Child>()
+            .Property(b => b.DateCreated)
+            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+
+            builder.Entity<Event>()
+            .Property(b => b.DateCreated)
+            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+
+            builder.Entity<EventState>()
+            .Property(b => b.DateCreated)
+            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+
+            builder.Entity<Reward>()
+            .Property(b => b.DateCreated)
+            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
         }
     }
 }

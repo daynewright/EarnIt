@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace user_auth.Models
+namespace EarnIt.Models
 {
     public class EventState
     {
@@ -16,9 +16,6 @@ namespace user_auth.Models
 
         [Required]
         public int Point { get; set; }
-
-        [Required]
-        public DateTime Date { get; set; }
 
         [Required]
         public int EventId { get; set; }
