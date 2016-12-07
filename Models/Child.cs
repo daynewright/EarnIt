@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using EarnIt.Models;
 
-namespace user_auth.Models
+namespace EarnIt.Models
 {
     public class Child 
     {

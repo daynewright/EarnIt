@@ -15,23 +15,28 @@ namespace EarnIt.Data
         {
         }
 
+        public DbSet<Child> Child { get; set; }
+        public DbSet<Event> Event { get; set; }
+        public DbSet<EventState> EventState { get; set; }
+        public DbSet<Reward> Reward { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            ModelBuilder.Entity<Child>()
+            builder.Entity<Child>()
             .Property(b => b.DateCreated)
             .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
 
-            ModelBuilder.Entity<Event>()
+            builder.Entity<Event>()
             .Property(b => b.DateCreated)
             .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
 
-            ModelBuilder.Entity<EventState>()
+            builder.Entity<EventState>()
             .Property(b => b.DateCreated)
             .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
 
-            ModelBuilder.Entity<Reward>()
+            builder.Entity<Reward>()
             .Property(b => b.DateCreated)
             .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
         }
