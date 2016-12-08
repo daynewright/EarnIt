@@ -37,6 +37,83 @@ namespace EarnIt.Controllers
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
+      // Allows for a json post registration
+        [HttpPost]
+        [AllowAnonymous]
+        public  async Task<IActionResult> RegisterJson([FromBody] RegisterViewModel model)
+        {
+            //RegisterViewModel model = JsonConvert.DeserializeObject<RegisterViewModel>(jsonString);
+
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation(3, "User created a new account with password.");
+                    return Json(new { Success="Registered successfully!" });
+                }
+                AddErrors(result);
+
+                return Json(new {Failure="User was not registered."});
+        }
+
+        // allows for a json post login
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginJson([FromBody] LoginViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation(1, "User logged in.");
+                    return Json( new {success="Logged in successfully!"} );
+                }
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning(2, "User account locked out.");
+                    return Json( new {locked="User is locked out."} );
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Json( new {invalid="Invalid login attempt."} );
+                }
+            }
+
+            return Json( new {failure="Unable to login user."} );
+        }
+
+        // allows API logoff and returns json response
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> LogOffJson()
+        {
+            try 
+            {
+                await _signInManager.SignOutAsync();
+                _logger.LogInformation(4, "User logged out.");
+                return Json(new {LoggedOut="Current user successfully logged out."});
+            }
+            catch
+            {
+                return Json(new {Failure="Something went wrong.  Not able to log out the current user."});
+            }
+        }
+
+        // allows for json get of current logged in user
+        [HttpGet]
+        [AllowAnonymous]
+        [Authorize]
+        public IActionResult GetUser()
+        {
+            var user = GetCurrentUserAsync();
+
+            return Json(new{ user=user} );
+        }
+
         //
         // GET: /Account/Login
         [HttpGet]
@@ -99,7 +176,7 @@ namespace EarnIt.Controllers
         // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
