@@ -15,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 namespace EarnIt.Controllers
 {
     [Produces("application/json")]
-    // [Route("api/[controller]/[action]")]
     public class EventController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -34,9 +33,13 @@ namespace EarnIt.Controllers
         {
             ApplicationUser user = await GetCurrentUserAsync();
             var eventsJson = new EventListViewModel(context, user);
-
             eventsJson.Events = await context.Event.Where(e => e.ChildId == id).OrderBy(e => e.Name).ToListAsync();
-            return Json(eventsJson);
+
+            if(eventsJson.Events.Any())
+            {
+                return Json(eventsJson);
+            }
+                return Json(new {Error="Unable to find events for the current id"});
         }
         
     }
