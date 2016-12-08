@@ -69,7 +69,7 @@ namespace EarnIt.Controllers
                 {
                     _logger.LogInformation(1, "User logged in.");
                     var loggedinUser = GetCurrentUserAsync();
-                    return Json( new {success = "Logged in successfully!", user = new { userName = loggedinUser.Result.Email, id = loggedinUser.Result.Id} });
+                    return Json( new {success = "Logged in successfully!"});
                 }
                 if (result.IsLockedOut)
                 {
