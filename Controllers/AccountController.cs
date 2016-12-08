@@ -42,7 +42,6 @@ namespace EarnIt.Controllers
         [AllowAnonymous]
         public  async Task<IActionResult> RegisterJson([FromBody] RegisterViewModel model)
         {
-            //RegisterViewModel model = JsonConvert.DeserializeObject<RegisterViewModel>(jsonString);
 
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -50,7 +49,7 @@ namespace EarnIt.Controllers
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
-                    return Json(new { Success="Registered successfully!" });
+                    return Json(new { Success = "Registered successfully!", User = user });
                 }
                 AddErrors(result);
 
@@ -69,7 +68,8 @@ namespace EarnIt.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return Json( new {success="Logged in successfully!"} );
+                    var loggedinUser = GetCurrentUserAsync();
+                    return Json( new {success = "Logged in successfully!", user = new { userName = loggedinUser.Result.Email, id = loggedinUser.Result.Id} });
                 }
                 if (result.IsLockedOut)
                 {
@@ -109,9 +109,15 @@ namespace EarnIt.Controllers
         [Authorize]
         public IActionResult GetUser()
         {
-            var user = GetCurrentUserAsync();
-
-            return Json(new{ user=user} );
+            try
+            {
+                var user = GetCurrentUserAsync();
+                return Json(new{ user = new { id = user.Result.Id, name = user.Result.Email } } );
+            }
+            catch
+            {
+                return Json(new { failure = "Unable to find a logged in user."});
+            }
         }
 
         //
