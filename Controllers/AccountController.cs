@@ -105,7 +105,6 @@ namespace EarnIt.Controllers
 
         // allows for json get of current logged in user
         [HttpGet]
-        [AllowAnonymous]
         [Authorize]
         public IActionResult GetUser()
         {

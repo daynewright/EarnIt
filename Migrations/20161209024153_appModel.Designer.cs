@@ -5,12 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using EarnIt.Data;
 
-namespace EarnIt.Data.Migrations
+namespace EarnIt.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161209024153_appModel")]
+    partial class appModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752");
@@ -98,7 +99,7 @@ namespace EarnIt.Data.Migrations
                     b.Property<int>("EventId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("AutRefresh");
+                    b.Property<bool>("AutoRefresh");
 
                     b.Property<int>("ChildId");
 
@@ -133,9 +134,9 @@ namespace EarnIt.Data.Migrations
                     b.ToTable("Event");
                 });
 
-            modelBuilder.Entity("EarnIt.Models.EventState", b =>
+            modelBuilder.Entity("EarnIt.Models.EventPoint", b =>
                 {
-                    b.Property<int>("EventStateId")
+                    b.Property<int>("EventPointId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated")
@@ -146,11 +147,11 @@ namespace EarnIt.Data.Migrations
 
                     b.Property<int>("Point");
 
-                    b.HasKey("EventStateId");
+                    b.HasKey("EventPointId");
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("EventState");
+                    b.ToTable("EventPoint");
                 });
 
             modelBuilder.Entity("EarnIt.Models.Reward", b =>
@@ -182,6 +183,26 @@ namespace EarnIt.Data.Migrations
                     b.HasIndex("EventId");
 
                     b.ToTable("Reward");
+                });
+
+            modelBuilder.Entity("EarnIt.Models.RewardEarned", b =>
+                {
+                    b.Property<int>("RewardEarnedId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+
+                    b.Property<int>("EventPointId");
+
+                    b.Property<bool>("Redeemed");
+
+                    b.HasKey("RewardEarnedId");
+
+                    b.HasIndex("EventPointId");
+
+                    b.ToTable("RewardEarned");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -307,7 +328,7 @@ namespace EarnIt.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("EarnIt.Models.EventState", b =>
+            modelBuilder.Entity("EarnIt.Models.EventPoint", b =>
                 {
                     b.HasOne("EarnIt.Models.Event", "Event")
                         .WithMany()
@@ -320,6 +341,14 @@ namespace EarnIt.Data.Migrations
                     b.HasOne("EarnIt.Models.Event", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("EarnIt.Models.RewardEarned", b =>
+                {
+                    b.HasOne("EarnIt.Models.EventPoint", "EventPoint")
+                        .WithMany()
+                        .HasForeignKey("EventPointId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

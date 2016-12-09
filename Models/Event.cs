@@ -30,7 +30,7 @@ namespace EarnIt.Models
         public string Type { get; set; }
 
         [Required]
-        public bool AutRefresh { get; set; }
+        public bool AutoRefresh { get; set; }
 
         [Required]
         public bool IsActive { get; set; }
