@@ -197,9 +197,13 @@ namespace EarnIt.Migrations
 
                     b.Property<bool>("Redeemed");
 
+                    b.Property<int>("RewardId");
+
                     b.HasKey("RewardEarnedId");
 
                     b.HasIndex("EventPointId");
+
+                    b.HasIndex("RewardId");
 
                     b.ToTable("RewardEarned");
                 });
@@ -348,6 +352,11 @@ namespace EarnIt.Migrations
                     b.HasOne("EarnIt.Models.EventPoint", "EventPoint")
                         .WithMany()
                         .HasForeignKey("EventPointId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("EarnIt.Models.Reward", "Reward")
+                        .WithMany()
+                        .HasForeignKey("RewardId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

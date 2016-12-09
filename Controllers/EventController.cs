@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using EarnIt.Data;
@@ -32,7 +28,7 @@ namespace EarnIt.Controllers
         public async Task<IActionResult> All([FromRoute] int id)
         {
             ApplicationUser user = await GetCurrentUserAsync();
-            var eventsJson = new EventListViewModel(context, user);
+            var eventsJson = new EventListViewModel();
             eventsJson.Events = await context.Event.Where(e => e.ChildId == id).OrderBy(e => e.Name).ToListAsync();
 
             if(eventsJson.Events.Any())
@@ -67,6 +63,5 @@ namespace EarnIt.Controllers
 
             return Json(new {error = "unable to save this event"});
         }
-        
     }
 }

@@ -6,7 +6,7 @@ namespace EarnIt.Models
 {
     public class RewardEarned
     {
-        [Required]
+        [Key]
         public int RewardEarnedId { get; set; }
 
         [Required]
@@ -20,5 +20,9 @@ namespace EarnIt.Models
         [Required]
         public int EventPointId { get; set; }
         public EventPoint EventPoint { get; set; }
+
+        [Required]
+        public int RewardId { get; set; }
+        public Reward Reward { get; set; }
     }
 }
