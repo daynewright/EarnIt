@@ -6,7 +6,7 @@ namespace EarnIt.Models
 {
     public class Reward
     {
-        [Required]
+        [Key]
         public int RewardId { get; set; }
 
         [Required]
