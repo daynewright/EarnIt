@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using EarnIt.Data;
 using EarnIt.Models;
 
 namespace EarnIt.ViewModels
 {
-    public class EventCreateViewModel : BaseViewModel
+    public class EventCreateViewModel
     {
         [Required]
         public string Name { get; set; }
@@ -31,6 +27,6 @@ namespace EarnIt.ViewModels
         [Required]
         public bool AutoRefresh {get; set; }
 
-        public EventCreateViewModel(ApplicationDbContext ctx, ApplicationUser user) : base(ctx, user) {}
+        //public EventCreateViewModel(ApplicationDbContext ctx, ApplicationUser user) : base(ctx, user) {}
     }
 }
