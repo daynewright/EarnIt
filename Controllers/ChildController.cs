@@ -28,11 +28,18 @@ namespace EarnIt.Controllers
         [Authorize]
         public async Task<IActionResult> All()
         {
-            ApplicationUser user = await GetCurrentUserAsync();
-            var childList = new ChildListViewModel();
-            childList.Children = await context.Child.Where(c => c.UserId == user.Id).OrderBy(c => c.Name).ToListAsync();
+            try 
+            {
+                ApplicationUser user = await GetCurrentUserAsync();
+                var childList = new ChildListViewModel();
+                childList.Children = await context.Child.Where(c => c.UserId == user.Id).OrderBy(c => c.Name).ToListAsync();
 
-            return Json( new { children = childList.Children});
+                return Json( new { children = childList.Children});
+            }
+            catch
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpPost]
@@ -76,7 +83,7 @@ namespace EarnIt.Controllers
             foreach (var singleEvent in events)
             {
                 Reward reward = await context.Reward.Where(r => r.EventId == singleEvent.EventId).SingleOrDefaultAsync();
-                
+
                 if(!rewards.Contains(reward))
                 {
                     rewards.Add(reward);

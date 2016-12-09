@@ -8,8 +8,8 @@ using EarnIt.Data;
 namespace EarnIt.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161209024153_appModel")]
-    partial class appModel
+    [Migration("20161209171620_appModels")]
+    partial class appModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -198,9 +198,13 @@ namespace EarnIt.Migrations
 
                     b.Property<bool>("Redeemed");
 
+                    b.Property<int>("RewardId");
+
                     b.HasKey("RewardEarnedId");
 
                     b.HasIndex("EventPointId");
+
+                    b.HasIndex("RewardId");
 
                     b.ToTable("RewardEarned");
                 });
@@ -349,6 +353,11 @@ namespace EarnIt.Migrations
                     b.HasOne("EarnIt.Models.EventPoint", "EventPoint")
                         .WithMany()
                         .HasForeignKey("EventPointId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("EarnIt.Models.Reward", "Reward")
+                        .WithMany()
+                        .HasForeignKey("RewardId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

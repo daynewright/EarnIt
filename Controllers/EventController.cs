@@ -63,6 +63,5 @@ namespace EarnIt.Controllers
 
             return Json(new {error = "unable to save this event"});
         }
-        
     }
 }

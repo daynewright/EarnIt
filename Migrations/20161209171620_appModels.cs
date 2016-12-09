@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EarnIt.Migrations
 {
-    public partial class appModel : Migration
+    public partial class appModels : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -250,7 +250,8 @@ namespace EarnIt.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
                     EventPointId = table.Column<int>(nullable: false),
-                    Redeemed = table.Column<bool>(nullable: false)
+                    Redeemed = table.Column<bool>(nullable: false),
+                    RewardId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -260,6 +261,12 @@ namespace EarnIt.Migrations
                         column: x => x.EventPointId,
                         principalTable: "EventPoint",
                         principalColumn: "EventPointId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RewardEarned_Reward_RewardId",
+                        column: x => x.RewardId,
+                        principalTable: "Reward",
+                        principalColumn: "RewardId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -300,6 +307,11 @@ namespace EarnIt.Migrations
                 column: "EventPointId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RewardEarned_RewardId",
+                table: "RewardEarned",
+                column: "RewardId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
@@ -329,9 +341,6 @@ namespace EarnIt.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Reward");
-
-            migrationBuilder.DropTable(
                 name: "RewardEarned");
 
             migrationBuilder.DropTable(
@@ -351,6 +360,9 @@ namespace EarnIt.Migrations
 
             migrationBuilder.DropTable(
                 name: "EventPoint");
+
+            migrationBuilder.DropTable(
+                name: "Reward");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
