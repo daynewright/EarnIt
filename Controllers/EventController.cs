@@ -41,6 +41,32 @@ namespace EarnIt.Controllers
             }
                 return Json(new {Error="Unable to find events for the current id"});
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Create([FromBody] EventCreateViewModel newEvent)
+        {
+            ApplicationUser user = await GetCurrentUserAsync();
+            
+            if(ModelState.IsValid)
+            {
+                Event model = new Event();
+                    model.Name = newEvent.Name;
+                    model.Description = newEvent.Description;
+                    model.ImageURL = newEvent.ImageURL;
+                    model.Type = newEvent.Type;
+                    model.AutoRefresh = newEvent.AutoRefresh;
+                    model.IsActive = newEvent.IsActive;
+                    model.Frequency = newEvent.Frequency;
+                    model.ChildId = newEvent.ChildId;
+
+                context.Add(model);
+                await context.SaveChangesAsync();
+                return Json(new { saved = "New Event saved!"});
+            }
+
+            return Json(new {error = "unable to save this event"});
+        }
         
     }
 }
