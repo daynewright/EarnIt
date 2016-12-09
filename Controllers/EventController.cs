@@ -7,6 +7,7 @@ using EarnIt.Models;
 using EarnIt.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace EarnIt.Controllers
 {
@@ -28,14 +29,29 @@ namespace EarnIt.Controllers
         public async Task<IActionResult> All([FromRoute] int id)
         {
             ApplicationUser user = await GetCurrentUserAsync();
-            var eventsJson = new EventListViewModel();
-            eventsJson.Events = await context.Event.Where(e => e.ChildId == id).OrderBy(e => e.Name).ToListAsync();
+            IEnumerable<Event> events = await context.Event.Where(e => e.ChildId == id).OrderBy(e => e.Name).ToListAsync();
 
-            if(eventsJson.Events.Any())
+            if(events.Any())
             {
-                return Json(eventsJson);
+                EventListViewModel viewEvents = new EventListViewModel();
+                EventViewModel viewEvent = new EventViewModel();
+
+                foreach (var sglEvent in events)
+                {
+                    viewEvent.Name = sglEvent.Name;
+                    viewEvent.Description = sglEvent.Description;
+                    viewEvent.Type = sglEvent.Type;
+                    viewEvent.ImageURL = sglEvent.ImageURL;
+                    viewEvent.AutoRefresh = sglEvent.AutoRefresh;
+                    viewEvent.IsActive = sglEvent.IsActive;
+                    viewEvent.Frequency = sglEvent.Frequency;
+                
+                    viewEvents.Events.Add(viewEvent);
+                }
+
+                return Json(new {viewEvents.Events});
             }
-                return Json(new {Error="Unable to find events for the current id"});
+                return Json(new {Error= "Unable to find events for the current id"});
         }
 
         [HttpPost]
