@@ -56,22 +56,12 @@ namespace EarnIt.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create([FromBody] EventCreateViewModel newEvent)
+        public async Task<IActionResult> Create([FromBody] Event model)
         {
             ApplicationUser user = await GetCurrentUserAsync();
             
             if(ModelState.IsValid)
             {
-                Event model = new Event();
-                    model.Name = newEvent.Name;
-                    model.Description = newEvent.Description;
-                    model.ImageURL = newEvent.ImageURL;
-                    model.Type = newEvent.Type;
-                    model.AutoRefresh = newEvent.AutoRefresh;
-                    model.IsActive = newEvent.IsActive;
-                    model.Frequency = newEvent.Frequency;
-                    model.ChildId = newEvent.ChildId;
-
                 context.Add(model);
                 await context.SaveChangesAsync();
                 return Json(new { saved = "New Event saved!"});

@@ -44,21 +44,13 @@ namespace EarnIt.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create([FromBody] RewardCreateViewModel reward)
+        public async Task<IActionResult> Create([FromBody] Reward reward)
         {
             if(ModelState.IsValid)
             {
                 ApplicationUser user = await GetCurrentUserAsync();
 
-                Reward model = new Reward();
-
-                model.Name = reward.Name;
-                model.Description = reward.Description;
-                model.ImageURL = reward.ImageURL;
-                model.PointsNeeded = reward.PointsNeeded;
-                model.EventId = reward.EventId;
-
-                context.Add(model);
+                context.Add(reward);
                 await context.SaveChangesAsync();
 
                 return Json(new {success = "Reward created!"} );
