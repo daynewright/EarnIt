@@ -5,7 +5,6 @@ namespace EarnIt.ViewModels
 {
     public class EventListViewModel
     {
-        public IEnumerable<Event> Events { get; set; }
-        //public EventListViewModel(ApplicationDbContext ctx, ApplicationUser user) : base(ctx, user) {}
+        public List<EventViewModel> Events { get; set; } = new List<EventViewModel>(); 
     }
 }
