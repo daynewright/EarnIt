@@ -65,47 +65,80 @@ namespace EarnIt.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [Authorize]
         public async Task<IActionResult> Remove([FromRoute] int id)
         {
             ApplicationUser user = await GetCurrentUserAsync();
 
-            //remove the child all events, points, earned rewards and rewards
-            Child child = await context.Child.Where(c => c.ChildId == id).FirstOrDefaultAsync();
-            List<Event> events = await context.Event.Where(e => e.ChildId == id).ToListAsync();
-
+            List<Event> events = new List<Event>();
             List<Reward> rewards = new List<Reward>();
-            List<EventPoint> points = new List<EventPoint>();
-    
-            //checks each event for rewards ands adds it to the reward list
-            foreach (var singleEvent in events)
-            {
-                Reward reward = await context.Reward.Where(r => r.RewardId == singleEvent.RewardId).SingleOrDefaultAsync();
+            List<EventPoint> allPoints = new List<EventPoint>();
+            List<RewardEarned> rewardsEarned = new List<RewardEarned>();
 
-                if(!rewards.Contains(reward))
+            //checks that the logged in user is authorized to delete this child record
+            try 
+            {
+                Child child = await context.Child.Where(c => c.ChildId == id && c.UserId == user.Id).SingleAsync();
+
+                //get all event ids attached to the passed in child
+                events = await context.Event.Where(e => e.ChildId == id).ToListAsync();
+        
+                //get add the rewards and event points for the passed in child from the reward ids and event ids
+                foreach (var singleEvent in events)
                 {
-                    rewards.Add(reward);
+                    List<EventPoint> tempList = new List<EventPoint>();
+
+                    Reward reward = await context.Reward.Where(r => r.RewardId == singleEvent.RewardId).SingleOrDefaultAsync();
+
+                    if(!rewards.Contains(reward) && reward != null)
+                    {
+                        rewards.Add(reward);
+                    }
+
+                    tempList = await context.EventPoint.Where(p => p.EventId == singleEvent.EventId).ToListAsync();
+
+                    if(tempList.Any())
+                    {
+                        foreach(var item in tempList)
+                        {
+                            allPoints.Add(item);
+                        }
+                    }
+                }
+                //get all the rewards earned for the passed in child from the reward ids
+                foreach(var reward in rewards)
+                {
+                    RewardEarned rewardEarned = await context.RewardEarned.Where(re => re.RewardId == reward.RewardId).SingleOrDefaultAsync();
+
+                    if(rewardEarned != null)
+                    {
+                        rewardsEarned.Add(rewardEarned);
+                    }
                 }
 
-                EventPoint point = await context.EventPoint.Where(p => p.EventId == singleEvent.EventId).SingleOrDefaultAsync();
-                points.Add(point);
+                //attempt to remove all of the rewards, points, events, earned rewards and the child
+                try
+                {
+                    ForEachContextRemove(allPoints.Cast<object>().ToList());
+                    ForEachContextRemove(rewardsEarned.Cast<object>().ToList());
+                    ForEachContextRemove(rewards.Cast<object>().ToList());
+                    ForEachContextRemove(events.Cast<object>().ToList());
+                    context.Remove(child); 
+
+                    await context.SaveChangesAsync();
+
+                    return Json(new {success = "The child was removed!"});
+                }
+                catch
+                {
+                    return BadRequest(new { error = "Not able to remove the child" } );
+                }
             }
-
-            try
-            {
-                ForEachContextRemove(points.Cast<object>().ToList());
-                ForEachContextRemove(rewards.Cast<object>().ToList());
-                ForEachContextRemove(events.Cast<object>().ToList());
-                context.Remove(child);
-
-                await context.SaveChangesAsync();
-
-                return Json(new {success = "The child was removed!"});
-            }
+            //returns a bad request if logged in user cannot delete the child passed in
             catch
             {
-                return BadRequest(ModelState);
+              return BadRequest( new { error = "This user is not authorized to delete this child" } );   
             }
         }
 
