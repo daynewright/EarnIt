@@ -52,21 +52,6 @@ namespace EarnIt.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RewardEarned",
-                columns: table => new
-                {
-                    RewardEarnedId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DateEarned = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
-                    DateRedeemed = table.Column<DateTime>(nullable: true),
-                    IsRedeemed = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RewardEarned", x => x.RewardEarnedId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -155,6 +140,28 @@ namespace EarnIt.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RewardEarned",
+                columns: table => new
+                {
+                    RewardEarnedId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DateEarned = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
+                    DateRedeemed = table.Column<DateTime>(nullable: true),
+                    IsRedeemed = table.Column<bool>(nullable: false),
+                    RewardId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RewardEarned", x => x.RewardEarnedId);
+                    table.ForeignKey(
+                        name: "FK_RewardEarned_Reward_RewardId",
+                        column: x => x.RewardId,
+                        principalTable: "Reward",
+                        principalColumn: "RewardId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -300,6 +307,11 @@ namespace EarnIt.Migrations
                 name: "IX_EventPoint_RewardEarnedId",
                 table: "EventPoint",
                 column: "RewardEarnedId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RewardEarned_RewardId",
+                table: "RewardEarned",
+                column: "RewardId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",

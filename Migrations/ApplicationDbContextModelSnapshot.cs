@@ -202,7 +202,11 @@ namespace EarnIt.Migrations
 
                     b.Property<bool>("IsRedeemed");
 
+                    b.Property<int>("RewardId");
+
                     b.HasKey("RewardEarnedId");
+
+                    b.HasIndex("RewardId");
 
                     b.ToTable("RewardEarned");
                 });
@@ -344,6 +348,14 @@ namespace EarnIt.Migrations
                     b.HasOne("EarnIt.Models.RewardEarned", "RewardEarned")
                         .WithMany()
                         .HasForeignKey("RewardEarnedId");
+                });
+
+            modelBuilder.Entity("EarnIt.Models.RewardEarned", b =>
+                {
+                    b.HasOne("EarnIt.Models.Reward", "Reward")
+                        .WithMany()
+                        .HasForeignKey("RewardId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
