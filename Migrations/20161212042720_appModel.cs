@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EarnIt.Migrations
 {
-    public partial class appModels : Migration
+    public partial class appModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,6 +31,27 @@ namespace EarnIt.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reward",
+                columns: table => new
+                {
+                    RewardId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
+                    DateEarned = table.Column<DateTime>(nullable: true),
+                    Description = table.Column<string>(maxLength: 55, nullable: false),
+                    ImageURL = table.Column<string>(maxLength: 55, nullable: true),
+                    IsActive = table.Column<bool>(nullable: false),
+                    IsEarned = table.Column<bool>(nullable: false),
+                    IsRedeemed = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 25, nullable: false),
+                    PointsNeeded = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reward", x => x.RewardId);
                 });
 
             migrationBuilder.CreateTable(
@@ -180,10 +201,11 @@ namespace EarnIt.Migrations
                     ChildId = table.Column<int>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
                     Description = table.Column<string>(maxLength: 55, nullable: false),
-                    Frequency = table.Column<int>(nullable: false),
+                    Frequency = table.Column<int>(nullable: true),
                     ImageURL = table.Column<string>(maxLength: 55, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 25, nullable: false),
+                    RewardId = table.Column<int>(nullable: true),
                     Type = table.Column<string>(maxLength: 25, nullable: false)
                 },
                 constraints: table =>
@@ -195,6 +217,12 @@ namespace EarnIt.Migrations
                         principalTable: "Child",
                         principalColumn: "ChildId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Event_Reward_RewardId",
+                        column: x => x.RewardId,
+                        principalTable: "Reward",
+                        principalColumn: "RewardId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,58 +243,6 @@ namespace EarnIt.Migrations
                         column: x => x.EventId,
                         principalTable: "Event",
                         principalColumn: "EventId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reward",
-                columns: table => new
-                {
-                    RewardId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
-                    Description = table.Column<string>(maxLength: 55, nullable: false),
-                    EventId = table.Column<int>(nullable: false),
-                    ImageURL = table.Column<string>(maxLength: 55, nullable: true),
-                    Name = table.Column<string>(maxLength: 25, nullable: false),
-                    PointsNeeded = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reward", x => x.RewardId);
-                    table.ForeignKey(
-                        name: "FK_Reward_Event_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Event",
-                        principalColumn: "EventId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RewardEarned",
-                columns: table => new
-                {
-                    RewardEarnedId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
-                    EventPointId = table.Column<int>(nullable: false),
-                    Redeemed = table.Column<bool>(nullable: false),
-                    RewardId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RewardEarned", x => x.RewardEarnedId);
-                    table.ForeignKey(
-                        name: "FK_RewardEarned_EventPoint_EventPointId",
-                        column: x => x.EventPointId,
-                        principalTable: "EventPoint",
-                        principalColumn: "EventPointId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RewardEarned_Reward_RewardId",
-                        column: x => x.RewardId,
-                        principalTable: "Reward",
-                        principalColumn: "RewardId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -292,24 +268,14 @@ namespace EarnIt.Migrations
                 column: "ChildId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Event_RewardId",
+                table: "Event",
+                column: "RewardId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EventPoint_EventId",
                 table: "EventPoint",
                 column: "EventId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reward_EventId",
-                table: "Reward",
-                column: "EventId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RewardEarned_EventPointId",
-                table: "RewardEarned",
-                column: "EventPointId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RewardEarned_RewardId",
-                table: "RewardEarned",
-                column: "RewardId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -341,7 +307,7 @@ namespace EarnIt.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "RewardEarned");
+                name: "EventPoint");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -359,19 +325,16 @@ namespace EarnIt.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "EventPoint");
-
-            migrationBuilder.DropTable(
-                name: "Reward");
+                name: "Event");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Event");
+                name: "Child");
 
             migrationBuilder.DropTable(
-                name: "Child");
+                name: "Reward");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

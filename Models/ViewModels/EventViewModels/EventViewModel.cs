@@ -7,6 +7,9 @@ namespace EarnIt.ViewModels
     public class EventViewModel
     {
         [Required]
+        public int EventId { get; set; }
+        public int? RewardId { get; set; }
+        [Required]
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }

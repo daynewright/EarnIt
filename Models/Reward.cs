@@ -25,11 +25,14 @@ namespace EarnIt.Models
         [StringLength(55)]
         public string ImageURL { get; set; }
 
-        [Required]
         public int PointsNeeded { get; set; }
 
-        [Required]
-        public int EventId { get; set; }
-        public Event Event { get; set; }
+        public bool IsActive { get; set; } = true;
+
+        public bool IsRedeemed { get; set; } = false;
+
+        public bool IsEarned { get; set; } = false;
+
+        public DateTime? DateEarned { get; set; }
     }
 }

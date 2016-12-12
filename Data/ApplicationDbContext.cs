@@ -18,7 +18,6 @@ namespace EarnIt.Data
         public DbSet<Child> Child { get; set; }
         public DbSet<Event> Event { get; set; }
         public DbSet<EventPoint> EventPoint { get; set; }
-        public DbSet<RewardEarned> RewardEarned { get; set; }
         public DbSet<Reward> Reward { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -38,10 +37,6 @@ namespace EarnIt.Data
             .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
 
             builder.Entity<Reward>()
-            .Property(b => b.DateCreated)
-            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
-
-            builder.Entity<RewardEarned>()
             .Property(b => b.DateCreated)
             .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
         }

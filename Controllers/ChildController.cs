@@ -77,12 +77,11 @@ namespace EarnIt.Controllers
 
             List<Reward> rewards = new List<Reward>();
             List<EventPoint> points = new List<EventPoint>();
-            List<RewardEarned> earnedList = new List<RewardEarned>();
     
             //checks each event for rewards ands adds it to the reward list
             foreach (var singleEvent in events)
             {
-                Reward reward = await context.Reward.Where(r => r.EventId == singleEvent.EventId).SingleOrDefaultAsync();
+                Reward reward = await context.Reward.Where(r => r.RewardId == singleEvent.RewardId).SingleOrDefaultAsync();
 
                 if(!rewards.Contains(reward))
                 {
@@ -93,17 +92,9 @@ namespace EarnIt.Controllers
                 points.Add(point);
             }
 
-            //gets each reward earned and adds it to the rewards earned list
-            foreach (var singleReward in rewards)
-            {
-                RewardEarned earned = await context.RewardEarned.Where(e => e.RewardId == singleReward.RewardId).SingleOrDefaultAsync();
-                earnedList.Add(earned);
-            }
-
             try
             {
                 ForEachContextRemove(points.Cast<object>().ToList());
-                ForEachContextRemove(earnedList.Cast<object>().ToList());
                 ForEachContextRemove(rewards.Cast<object>().ToList());
                 ForEachContextRemove(events.Cast<object>().ToList());
                 context.Remove(child);

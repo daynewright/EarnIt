@@ -34,24 +34,42 @@ namespace EarnIt.Controllers
             if(events.Any())
             {
                 EventListViewModel viewEvents = new EventListViewModel();
-                EventViewModel viewEvent = new EventViewModel();
-
-                foreach (var sglEvent in events)
-                {
-                    viewEvent.Name = sglEvent.Name;
-                    viewEvent.Description = sglEvent.Description;
-                    viewEvent.Type = sglEvent.Type;
-                    viewEvent.ImageURL = sglEvent.ImageURL;
-                    viewEvent.AutoRefresh = sglEvent.AutoRefresh;
-                    viewEvent.IsActive = sglEvent.IsActive;
-                    viewEvent.Frequency = sglEvent.Frequency;
-                
-                    viewEvents.Events.Add(viewEvent);
+                try
+                { 
+                    Child child = await context.Child.Where(c => c.UserId == user.Id && events.Any(e => e.ChildId == c.ChildId)).FirstAsync();
+                    
+                    foreach (var sglEvent in events)
+                    {
+                        EventViewModel viewEvent = new EventViewModel();
+                            viewEvent.EventId = sglEvent.EventId;
+                            viewEvent.RewardId = sglEvent.RewardId;
+                            viewEvent.Name = sglEvent.Name;
+                            viewEvent.Description = sglEvent.Description;
+                            viewEvent.Type = sglEvent.Type;
+                            viewEvent.ImageURL = sglEvent.ImageURL;
+                            viewEvent.AutoRefresh = sglEvent.AutoRefresh;
+                            viewEvent.IsActive = sglEvent.IsActive;
+                            viewEvent.Frequency = sglEvent.Frequency;
+                        
+                        viewEvents.Events.Add(viewEvent);
+                    }
+                    return Json(new {viewEvents.Events});      
                 }
-
-                return Json(new {viewEvents.Events});
+                catch
+                {
+                    return BadRequest( new { error = $"The child id #{id} is not authorized for the logged in user"});
+                }
             }
-                return Json(new {Error= "Unable to find events for the current id"});
+
+            try
+            {
+                Child child = await context.Child.Where(c => c.ChildId == id && c.UserId == user.Id).SingleAsync();
+                return BadRequest(new {Error = $"Unable to find any events for the child id #{id} for this user"});
+            }
+            catch 
+            {
+                return BadRequest(new {Error= $"There is no child with the id #{id}. Did you forget to pass an id? ex: event/all/{{id}}"}); 
+            }
         }
 
         [HttpPost]
@@ -62,11 +80,21 @@ namespace EarnIt.Controllers
             
             if(ModelState.IsValid)
             {
-                context.Add(model);
-                await context.SaveChangesAsync();
-                return Json(new { saved = "New Event saved!"});
-            }
+                try
+                {
+                    Child child = await context.Child.Where(c => c.ChildId == model.ChildId && c.UserId == user.Id).SingleAsync();
 
+                    context.Add(model);
+                    await context.SaveChangesAsync();
+                    context.Entry(model).GetDatabaseValues();
+
+                    return Json(new { success = "New Event saved!", newEvent = model});
+                }
+                catch
+                {
+                    return BadRequest( new { error = $"The current user is not authorized to add events for the child with id #{model.ChildId}" });
+                }
+            }
             return Json(new {error = "unable to save this event"});
         }
     }

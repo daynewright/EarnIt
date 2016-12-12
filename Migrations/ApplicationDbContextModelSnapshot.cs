@@ -110,8 +110,7 @@ namespace EarnIt.Migrations
                         .IsRequired()
                         .HasMaxLength(55);
 
-                    b.Property<int?>("Frequency")
-                        .IsRequired();
+                    b.Property<int?>("Frequency");
 
                     b.Property<string>("ImageURL")
                         .HasMaxLength(55);
@@ -122,6 +121,8 @@ namespace EarnIt.Migrations
                         .IsRequired()
                         .HasMaxLength(25);
 
+                    b.Property<int?>("RewardId");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(25);
@@ -129,6 +130,8 @@ namespace EarnIt.Migrations
                     b.HasKey("EventId");
 
                     b.HasIndex("ChildId");
+
+                    b.HasIndex("RewardId");
 
                     b.ToTable("Event");
                 });
@@ -162,14 +165,20 @@ namespace EarnIt.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
 
+                    b.Property<DateTime?>("DateEarned");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(55);
 
-                    b.Property<int>("EventId");
-
                     b.Property<string>("ImageURL")
                         .HasMaxLength(55);
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<bool>("IsEarned");
+
+                    b.Property<bool>("IsRedeemed");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -179,33 +188,7 @@ namespace EarnIt.Migrations
 
                     b.HasKey("RewardId");
 
-                    b.HasIndex("EventId");
-
                     b.ToTable("Reward");
-                });
-
-            modelBuilder.Entity("EarnIt.Models.RewardEarned", b =>
-                {
-                    b.Property<int>("RewardEarnedId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
-
-                    b.Property<int>("EventPointId");
-
-                    b.Property<bool>("Redeemed");
-
-                    b.Property<int>("RewardId");
-
-                    b.HasKey("RewardEarnedId");
-
-                    b.HasIndex("EventPointId");
-
-                    b.HasIndex("RewardId");
-
-                    b.ToTable("RewardEarned");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -329,6 +312,10 @@ namespace EarnIt.Migrations
                         .WithMany()
                         .HasForeignKey("ChildId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("EarnIt.Models.Reward", "Reward")
+                        .WithMany()
+                        .HasForeignKey("RewardId");
                 });
 
             modelBuilder.Entity("EarnIt.Models.EventPoint", b =>
@@ -336,27 +323,6 @@ namespace EarnIt.Migrations
                     b.HasOne("EarnIt.Models.Event", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("EarnIt.Models.Reward", b =>
-                {
-                    b.HasOne("EarnIt.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("EarnIt.Models.RewardEarned", b =>
-                {
-                    b.HasOne("EarnIt.Models.EventPoint", "EventPoint")
-                        .WithMany()
-                        .HasForeignKey("EventPointId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("EarnIt.Models.Reward", "Reward")
-                        .WithMany()
-                        .HasForeignKey("RewardId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
