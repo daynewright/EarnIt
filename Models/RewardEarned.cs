@@ -17,5 +17,9 @@ namespace EarnIt.Models
         [DataType(DataType.Date)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DateEarned { get; set; }
+
+        [Required]
+        public int RewardId { get; set; }
+        public Reward Reward { get; set; }
     }
 }
