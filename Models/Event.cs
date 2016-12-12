@@ -33,13 +33,16 @@ namespace EarnIt.Models
         public bool AutoRefresh { get; set; }
 
         [Required]
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
-        [Required]
         public int? Frequency { get; set; }
 
         [Required]
         public int ChildId { get; set; }
         public Child Child { get; set; }
+
+        [ForeignKey("RewardId")]
+        public int? RewardId { get; set; }
+        public Reward Reward { get; set; }
     }
 }
