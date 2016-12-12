@@ -8,6 +8,7 @@ using EarnIt.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System;
 
 namespace EarnIt.Controllers
 {
@@ -150,6 +151,7 @@ namespace EarnIt.Controllers
             {
                 RewardEarned rewardEarned = await context.RewardEarned.Where(re => re.RewardEarnedId == id).SingleAsync();
                 rewardEarned.IsRedeemed = true;
+                rewardEarned.DateRedeemed = DateTime.Now;
 
                 context.Update(rewardEarned);
                 await context.SaveChangesAsync();
