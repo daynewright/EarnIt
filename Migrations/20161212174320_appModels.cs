@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EarnIt.Migrations
 {
-    public partial class appModel : Migration
+    public partial class appModels : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,18 +40,30 @@ namespace EarnIt.Migrations
                     RewardId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
-                    DateEarned = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(maxLength: 55, nullable: false),
                     ImageURL = table.Column<string>(maxLength: 55, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
-                    IsEarned = table.Column<bool>(nullable: false),
-                    IsRedeemed = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 25, nullable: false),
                     PointsNeeded = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reward", x => x.RewardId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RewardEarned",
+                columns: table => new
+                {
+                    RewardEarnedId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DateEarned = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
+                    DateRedeemed = table.Column<DateTime>(nullable: true),
+                    IsRedeemed = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RewardEarned", x => x.RewardEarnedId);
                 });
 
             migrationBuilder.CreateTable(
@@ -233,7 +245,8 @@ namespace EarnIt.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
                     EventId = table.Column<int>(nullable: false),
-                    Point = table.Column<int>(nullable: false)
+                    Point = table.Column<bool>(nullable: false),
+                    RewardEarnedId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -244,6 +257,12 @@ namespace EarnIt.Migrations
                         principalTable: "Event",
                         principalColumn: "EventId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventPoint_RewardEarned_RewardEarnedId",
+                        column: x => x.RewardEarnedId,
+                        principalTable: "RewardEarned",
+                        principalColumn: "RewardEarnedId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -276,6 +295,11 @@ namespace EarnIt.Migrations
                 name: "IX_EventPoint_EventId",
                 table: "EventPoint",
                 column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventPoint_RewardEarnedId",
+                table: "EventPoint",
+                column: "RewardEarnedId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -326,6 +350,9 @@ namespace EarnIt.Migrations
 
             migrationBuilder.DropTable(
                 name: "Event");
+
+            migrationBuilder.DropTable(
+                name: "RewardEarned");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

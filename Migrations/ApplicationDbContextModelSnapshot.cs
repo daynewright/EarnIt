@@ -147,11 +147,15 @@ namespace EarnIt.Migrations
 
                     b.Property<int>("EventId");
 
-                    b.Property<int>("Point");
+                    b.Property<bool>("Point");
+
+                    b.Property<int?>("RewardEarnedId");
 
                     b.HasKey("EventPointId");
 
                     b.HasIndex("EventId");
+
+                    b.HasIndex("RewardEarnedId");
 
                     b.ToTable("EventPoint");
                 });
@@ -165,8 +169,6 @@ namespace EarnIt.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
 
-                    b.Property<DateTime?>("DateEarned");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(55);
@@ -175,10 +177,6 @@ namespace EarnIt.Migrations
                         .HasMaxLength(55);
 
                     b.Property<bool>("IsActive");
-
-                    b.Property<bool>("IsEarned");
-
-                    b.Property<bool>("IsRedeemed");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -189,6 +187,24 @@ namespace EarnIt.Migrations
                     b.HasKey("RewardId");
 
                     b.ToTable("Reward");
+                });
+
+            modelBuilder.Entity("EarnIt.Models.RewardEarned", b =>
+                {
+                    b.Property<int>("RewardEarnedId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateEarned")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+
+                    b.Property<DateTime?>("DateRedeemed");
+
+                    b.Property<bool>("IsRedeemed");
+
+                    b.HasKey("RewardEarnedId");
+
+                    b.ToTable("RewardEarned");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -324,6 +340,10 @@ namespace EarnIt.Migrations
                         .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("EarnIt.Models.RewardEarned", "RewardEarned")
+                        .WithMany()
+                        .HasForeignKey("RewardEarnedId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

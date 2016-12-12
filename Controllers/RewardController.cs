@@ -7,7 +7,6 @@ using EarnIt.Models;
 using EarnIt.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace EarnIt.Controllers
 {
