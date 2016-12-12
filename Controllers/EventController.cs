@@ -11,6 +11,15 @@ using System.Collections.Generic;
 
 namespace EarnIt.Controllers
 {
+    /**
+     * Class: Event
+     * Purpose: Used to create an event, get all events or disable an event for the authorized user
+     * Methods:
+     *   Task<IActionResult> All(int id) - Gets all the events for the passed in child id if authorized
+     *       id - Child id needed to get all events
+     *   Task<IActionResult> Create(event model) - Creates an event for the child id
+     *       model - A json object with the information to add the event to the database
+     **/
     [Produces("application/json")]
     public class EventController : Controller
     {
@@ -23,7 +32,13 @@ namespace EarnIt.Controllers
             _userManager = UserManager;
             context = ctx;
         }
-
+        /**
+         * Purpose: Gets all of the events for the child id passed in that the user is authorized to get
+         * Arguments:
+         *      id - Child id for all events
+         * Return:
+         *      If successful returns object with all events otherwise custom bad request object
+         */
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> All([FromRoute] int id)
@@ -72,6 +87,13 @@ namespace EarnIt.Controllers
             }
         }
 
+        /**
+         * Purpose: Creates a new event for the child id passed in the model if authorized
+         * Arguments:
+         *      model - An object containing what is needed to post the event
+         * Return:
+         *      If successful then an object with the created event otherwise a custom bad request object
+         */
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Create([FromBody] Event model)
