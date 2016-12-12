@@ -138,7 +138,7 @@ namespace EarnIt.Controllers
             //returns a bad request if logged in user cannot delete the child passed in
             catch
             {
-              return BadRequest( new { error = "This user is not authorized to delete this child" } );   
+              return BadRequest( new { error = "This user is not authorized to delete this child or the child record does not exist" } );   
             }
         }
 
