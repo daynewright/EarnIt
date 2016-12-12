@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using EarnIt.Models;
@@ -19,6 +15,7 @@ namespace EarnIt.Data
         public DbSet<Event> Event { get; set; }
         public DbSet<EventPoint> EventPoint { get; set; }
         public DbSet<Reward> Reward { get; set; }
+        public DbSet<RewardEarned> RewardEarned { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -38,6 +35,10 @@ namespace EarnIt.Data
 
             builder.Entity<Reward>()
             .Property(b => b.DateCreated)
+            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+
+            builder.Entity<RewardEarned>()
+            .Property(b => b.DateEarned)
             .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
         }
     }

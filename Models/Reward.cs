@@ -28,11 +28,5 @@ namespace EarnIt.Models
         public int PointsNeeded { get; set; }
 
         public bool IsActive { get; set; } = true;
-
-        public bool IsRedeemed { get; set; } = false;
-
-        public bool IsEarned { get; set; } = false;
-
-        public DateTime? DateEarned { get; set; }
     }
 }

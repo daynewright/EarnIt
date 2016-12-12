@@ -15,11 +15,15 @@ namespace EarnIt.Models
         public DateTime DateCreated { get; set; }
 
         [Required]
-        public int Point { get; set; }
+        public bool Point { get; set; }
 
         [Required]
         public int EventId { get; set; }
 
         public Event Event { get; set; }
+
+        [ForeignKey("RewardEarnedId")]
+        public int? RewardEarnedId { get; set; }
+        public RewardEarned RewardEarned { get; set; }
     }
 }
