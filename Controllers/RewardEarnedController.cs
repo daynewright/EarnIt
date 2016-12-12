@@ -35,19 +35,43 @@ namespace EarnIt.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create([FromBody] RewardEarned rewardEarned)
+        public async Task<IActionResult> Create([FromRoute] int id)
         {
-            
-            if(ModelState.IsValid)
+            ApplicationUser user = await GetCurrentUserAsync();
+            RewardEarned rewardEarned = new RewardEarned();
+
+            try
             {
+                Child child = await context.Child.Where(c => c.UserId == user.Id).SingleAsync();
+                Reward reward = await context.Reward.Where(r => r.RewardId == id).SingleAsync();
+                rewardEarned.RewardId = id; 
                 context.Add(rewardEarned);
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync();  
                 await context.Entry(rewardEarned).GetDatabaseValuesAsync();
+
+                List<Event> events = new List<Event>();
+                List<EventPoint> eventPoints = new List<EventPoint>();
+
+                events = await context.Event.Where(e => e.RewardId == id).ToListAsync();
+
+                foreach(var snglEvent in events)
+                {
+                    eventPoints = await context.EventPoint.Where(ep => ep.EventId == snglEvent.EventId).ToListAsync();
+                    
+                    foreach(var point in eventPoints)
+                    {
+                        point.RewardEarnedId = rewardEarned.RewardEarnedId;
+                        context.Update(point);
+                    }
+                    await context.SaveChangesAsync();
+                }
 
                 return Json(new { success = "Reward earned saved!", rewardEarned } );
             }
-
-            return BadRequest(new { error = "Unable to add reward earned" } );
+            catch
+            {
+                return BadRequest(new { error = "Unable to add reward earned" } );            
+            }
         }
 
         [HttpGet]
