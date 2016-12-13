@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using EarnIt.Data;
 using EarnIt.Models;
 using EarnIt.Services;
+using System;
 
 namespace EarnIt
 {
@@ -35,9 +36,11 @@ namespace EarnIt
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string path = System.Environment.GetEnvironmentVariable("EARNIT_DB");
+            Console.WriteLine($"connection = {path}");
+
             // Add framework services.
-            var connectionString = Configuration["DbContextSettings:ConnectionString"];
-            services.AddDbContext<ApplicationDbContext>(opts => opts.UseNpgsql(connectionString));
+            services.AddDbContext<ApplicationDbContext>(opts => opts.UseNpgsql(path));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
