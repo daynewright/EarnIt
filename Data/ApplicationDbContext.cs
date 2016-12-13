@@ -23,23 +23,23 @@ namespace EarnIt.Data
 
             builder.Entity<Child>()
             .Property(b => b.DateCreated)
-            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+            .HasDefaultValueSql("now()");
 
             builder.Entity<Event>()
             .Property(b => b.DateCreated)
-            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+            .HasDefaultValueSql("now()");
 
             builder.Entity<EventPoint>()
             .Property(b => b.DateCreated)
-            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+            .HasDefaultValueSql("now()");
 
             builder.Entity<Reward>()
             .Property(b => b.DateCreated)
-            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+            .HasDefaultValueSql("now()");
 
             builder.Entity<RewardEarned>()
             .Property(b => b.DateEarned)
-            .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+            .HasDefaultValueSql("now()");
         }
     }
 }
