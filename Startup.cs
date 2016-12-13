@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -12,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using EarnIt.Data;
 using EarnIt.Models;
 using EarnIt.Services;
+using System;
 
 namespace EarnIt
 {
@@ -39,9 +36,11 @@ namespace EarnIt
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string path = System.Environment.GetEnvironmentVariable("EARNIT_DB");
+            Console.WriteLine($"connection = {path}");
+
             // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(opts => opts.UseNpgsql(path));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

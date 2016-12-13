@@ -14,6 +14,8 @@ namespace EarnIt
         {
             var config = new ConfigurationBuilder()
                 .AddCommandLine(args)
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("hosting.json", optional: true)
                 .AddEnvironmentVariables(prefix: "ASPNETCORE_")
                 .Build();
 

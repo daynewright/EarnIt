@@ -13,6 +13,7 @@ namespace EarnIt.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752");
 
             modelBuilder.Entity("EarnIt.Models.ApplicationUser", b =>
@@ -74,7 +75,7 @@ namespace EarnIt.Migrations
 
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("ImageURL")
                         .HasMaxLength(55);
@@ -104,7 +105,7 @@ namespace EarnIt.Migrations
 
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -143,7 +144,7 @@ namespace EarnIt.Migrations
 
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("EventId");
 
@@ -167,7 +168,7 @@ namespace EarnIt.Migrations
 
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -196,7 +197,7 @@ namespace EarnIt.Migrations
 
                     b.Property<DateTime>("DateEarned")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("strftime('%Y-%m-%d %H:%M:%S')");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<DateTime?>("DateRedeemed");
 

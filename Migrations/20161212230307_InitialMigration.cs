@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace EarnIt.Migrations
 {
-    public partial class appModels : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -38,8 +39,8 @@ namespace EarnIt.Migrations
                 columns: table => new
                 {
                     RewardId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "now()"),
                     Description = table.Column<string>(maxLength: 55, nullable: false),
                     ImageURL = table.Column<string>(maxLength: 55, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
@@ -84,9 +85,9 @@ namespace EarnIt.Migrations
                 columns: table => new
                 {
                     ChildId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Age = table.Column<int>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "now()"),
                     ImageURL = table.Column<string>(maxLength: 55, nullable: true),
                     Name = table.Column<string>(maxLength: 25, nullable: false),
                     UserId = table.Column<string>(nullable: false)
@@ -107,7 +108,7 @@ namespace EarnIt.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
@@ -148,8 +149,8 @@ namespace EarnIt.Migrations
                 columns: table => new
                 {
                     RewardEarnedId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DateEarned = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    DateEarned = table.Column<DateTime>(nullable: false, defaultValueSql: "now()"),
                     DateRedeemed = table.Column<DateTime>(nullable: true),
                     IsRedeemed = table.Column<bool>(nullable: false),
                     RewardId = table.Column<int>(nullable: false)
@@ -170,7 +171,7 @@ namespace EarnIt.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true),
                     RoleId = table.Column<string>(nullable: false)
@@ -215,10 +216,10 @@ namespace EarnIt.Migrations
                 columns: table => new
                 {
                     EventId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     AutoRefresh = table.Column<bool>(nullable: false),
                     ChildId = table.Column<int>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "now()"),
                     Description = table.Column<string>(maxLength: 55, nullable: false),
                     Frequency = table.Column<int>(nullable: true),
                     ImageURL = table.Column<string>(maxLength: 55, nullable: true),
@@ -249,8 +250,8 @@ namespace EarnIt.Migrations
                 columns: table => new
                 {
                     EventPointId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "strftime('%Y-%m-%d %H:%M:%S')"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "now()"),
                     EventId = table.Column<int>(nullable: false),
                     Point = table.Column<bool>(nullable: false),
                     RewardEarnedId = table.Column<int>(nullable: true)
