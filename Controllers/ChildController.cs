@@ -59,8 +59,9 @@ namespace EarnIt.Controllers
 
                 context.Add(model);
                 await context.SaveChangesAsync();
+                await context.Entry(model).GetDatabaseValuesAsync();
 
-                return Json(new {success = "Child added!"});
+                return Json(new { success = "Child added!", child = model });
             }
             return BadRequest(ModelState);
         }

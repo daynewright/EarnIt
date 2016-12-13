@@ -45,16 +45,29 @@ namespace EarnIt.Controllers
         {
 
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            if(model.ConfirmPassword == model.Password)
+            {
                 var result = await _userManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
-                    return Json(new { Success = "Registered successfully!", User = user });
+
+                    UserViewModel userView = new UserViewModel();
+                    userView.Email = user.Email;
+                    userView.Id = user.Id;
+
+                    return Json(new { Success = "Registered successfully!", User = userView });
                 }
                 AddErrors(result);
 
-                return Json(new {Failure="User was not registered."});
+                return BadRequest(new { result.Errors });
+            }
+            else
+            {
+                return BadRequest(new {error = "Passwords do not match"});
+            }
         }
 
         // allows for a json post login
@@ -75,16 +88,16 @@ namespace EarnIt.Controllers
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning(2, "User account locked out.");
-                    return Json( new {locked="User is locked out."} );
+                    return BadRequest( new {locked="User is locked out."} );
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Json( new {invalid="Invalid login attempt."} );
+                    return BadRequest( new {invalid="Invalid login attempt."} );
                 }
             }
 
-            return Json( new {failure="Unable to login user."} );
+            return BadRequest( new { failure="Unable to login user." } );
         }
 
         // allows API logoff and returns json response
@@ -116,7 +129,7 @@ namespace EarnIt.Controllers
             }
             catch
             {
-                return Json(new { failure = "Unable to find a logged in user."});
+                return Json(new { failure="Unable to find a logged in user."});
             }
         }
 
