@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EarnIt.Controllers
@@ -10,26 +11,11 @@ namespace EarnIt.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return BadRequest( new { error = "You need to login or hit an API endpoint." } );
         }
-
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
         public IActionResult Error()
         {
-            return View();
+            return BadRequest( new { error = "Something went wrong." } );
         }
     }
 }

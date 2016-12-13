@@ -40,6 +40,7 @@ namespace EarnIt.Controllers
          * Return:
          *      If successful then an object with the event points for the id otherwise a custom bad request object
          */
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> All([FromRoute] int id)
@@ -77,5 +78,5 @@ namespace EarnIt.Controllers
 
             return BadRequest(new { error = "Unable to save the event point", eventPoint });
         }
-    }
+    } 
 }
