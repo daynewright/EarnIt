@@ -34,7 +34,12 @@ namespace EarnIt.Controllers
                 var childList = new ChildListViewModel();
                 childList.Children = await context.Child.Where(c => c.UserId == user.Id).OrderBy(c => c.Name).ToListAsync();
 
-                return Json( new { children = childList.Children});
+                if(childList.Children.Any())
+                {
+                    return Json( new { children = childList.Children});
+                }
+
+                return BadRequest( new { error = "Unable to find any children for the logged in user." });
             }
             catch
             {
