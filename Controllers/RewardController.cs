@@ -41,7 +41,7 @@ namespace EarnIt.Controllers
          *      Returns json object with the reward data requested
          *      If no reward is found then returns a bad request
          */
-        [HttpGet("{id}")]
+        [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetSingle([FromRoute] int id)
         {
