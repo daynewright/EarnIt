@@ -32,7 +32,6 @@ namespace EarnIt.Controllers
             _userManager = UserManager;
             context = ctx;
         }
-
         /**
          * Purpose: Gets a single reward from the reward id passed in
          * Arguments:

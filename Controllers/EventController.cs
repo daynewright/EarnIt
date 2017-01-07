@@ -55,6 +55,8 @@ namespace EarnIt.Controllers
                     
                     foreach (var sglEvent in events)
                     {
+                        Reward reward = await context.Reward.Where(r => r.RewardId == sglEvent.RewardId).FirstAsync();
+
                         EventViewModel viewEvent = new EventViewModel();
                             viewEvent.EventId = sglEvent.EventId;
                             viewEvent.RewardId = sglEvent.RewardId;
@@ -65,6 +67,7 @@ namespace EarnIt.Controllers
                             viewEvent.AutoRefresh = sglEvent.AutoRefresh;
                             viewEvent.IsActive = sglEvent.IsActive;
                             viewEvent.Frequency = sglEvent.Frequency;
+                            viewEvent.Reward = reward;
                         
                         viewEvents.Events.Add(viewEvent);
                     }
