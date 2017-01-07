@@ -12,5 +12,7 @@ namespace EarnIt.ViewModels
         public string ImageURL { get; set; }
         [Required]
         public int PointsNeeded { get; set; }
+        [Required]
+        public int RewardId { get; set; }
     }
 }

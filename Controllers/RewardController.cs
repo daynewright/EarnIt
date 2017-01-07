@@ -57,6 +57,7 @@ namespace EarnIt.Controllers
                 model.Description = reward.Description;
                 model.ImageURL = reward.ImageURL;
                 model.PointsNeeded = reward.PointsNeeded;
+                model.RewardId = reward.RewardId;
 
                 return Json(new {reward = model});
             }
