@@ -75,7 +75,7 @@ namespace EarnIt.Controllers
                 {                     
                     foreach (var sglEvent in events)
                     {
-                        Reward reward = await context.Reward.Where(r => r.RewardId == sglEvent.RewardId).FirstAsync();
+                        Reward reward = await context.Reward.Where(r => r.RewardId == sglEvent.RewardId).FirstOrDefaultAsync();
 
                         EventViewModel viewEvent = new EventViewModel();
                             viewEvent.EventId = sglEvent.EventId;
