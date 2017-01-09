@@ -32,6 +32,28 @@ namespace EarnIt.Controllers
             _userManager = UserManager;
             context = ctx;
         }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> remove([FromRoute] int id) 
+        {
+            ApplicationUser user = await GetCurrentUserAsync();
+            Event sglEvent = await context.Event.Where( e => e.EventId == id).FirstAsync();
+
+            try 
+            {
+                context.Remove(sglEvent);
+                await context.SaveChangesAsync();
+
+                return Json(new {success = "Deleted"});
+            }
+            catch
+            {
+                return BadRequest( new {fail = "could not delete"});
+            }            
+        }
+
+
         /**
          * Purpose: Gets all of the events for the child id passed in that the user is authorized to get
          * Arguments:
@@ -50,9 +72,7 @@ namespace EarnIt.Controllers
             {
                 EventListViewModel viewEvents = new EventListViewModel();
                 try
-                { 
-                    Child child = await context.Child.Where(c => c.UserId == user.Id && events.Any(e => e.ChildId == c.ChildId)).FirstAsync();
-                    
+                {                     
                     foreach (var sglEvent in events)
                     {
                         Reward reward = await context.Reward.Where(r => r.RewardId == sglEvent.RewardId).FirstAsync();
@@ -81,7 +101,7 @@ namespace EarnIt.Controllers
 
             try
             {
-                Child child = await context.Child.Where(c => c.ChildId == id && c.UserId == user.Id).SingleAsync();
+                Child child = await context.Child.Where(c => c.ChildId == id).SingleAsync();
                 return BadRequest(new {Error = $"Unable to find any events for the child id #{id} for this user"});
             }
             catch 
